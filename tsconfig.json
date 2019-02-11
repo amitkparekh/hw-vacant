@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "build",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es2017",
+    "allowJs": false
+  },
+  "exclude": ["dist", "node_modules"]
+}
