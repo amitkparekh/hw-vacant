@@ -1,11 +1,12 @@
 import { launch } from 'puppeteer';
 import getCredentials from './src/prompts/getCredentials';
-import loginUser from './src/pageNavigation/loginUser';
-import gotoRoomSelection from './src/pageNavigation/gotoRoomSelection';
-import selectRooms from './src/pageNavigation/selectRooms';
-import selectWeek from './src/pageNavigation/selectWeek';
-import selectDay from './src/pageNavigation/selectDay';
-import viewTimetable from './src/pageNavigation/viewTimetable';
+import loginUser from './src/pageInteraction/loginUser';
+import gotoRoomSelection from './src/pageInteraction/gotoRoomSelection';
+import selectRooms from './src/pageInteraction/selectRooms';
+import selectWeek from './src/pageInteraction/selectWeek';
+import selectDay from './src/pageInteraction/selectDay';
+import viewTimetable from './src/pageInteraction/viewTimetable';
+import selectView from './src/pageInteraction/selectView';
 /**
  * An array which contains strings.
  *
@@ -80,6 +81,7 @@ async function run(url: string) {
   await selectRooms(page, excludedRooms);
   await selectWeek(page);
   await selectDay(page);
+  await selectView(page, 'list');
 
   await viewTimetable(page);
 }

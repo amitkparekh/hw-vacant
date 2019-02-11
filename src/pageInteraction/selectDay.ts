@@ -6,7 +6,7 @@ import { Page } from 'puppeteer';
  * @param page
  * @param day
  */
-async function selectDay(page: Page, day: number = new Date().getDay() + 1) {
+async function selectDay(page: Page, day: number = new Date().getDay()) {
   console.log('Day:', day);
   const dayString = day.toString();
 
