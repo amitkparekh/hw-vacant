@@ -1,6 +1,9 @@
 import { prompt } from 'prompts';
 
-async function getCredentials() {
+/**
+ * Get the username and password and return them
+ */
+async function setCredentials() {
   const questions = [
     {
       type: 'text',
@@ -17,4 +20,4 @@ async function getCredentials() {
   return await prompt(questions);
 }
 
-export default getCredentials;
+export default setCredentials;

@@ -4,8 +4,8 @@ import { Page } from 'puppeteer';
  * Login the user using credentials passed as arguments
  *
  * @param page
- * @param username
- * @param password
+ * @param username Heriot-Watt username
+ * @param password Password for heriot-watt account
  */
 async function loginUser(page: Page, username: string, password) {
   // Get the element for the username, and type username
