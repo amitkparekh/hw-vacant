@@ -62,8 +62,9 @@ async function run(url: string) {
   // Ask the questions at the start
   const credentials = await setCredentials();
   const day: number = await setDay();
-  let week: string = '';
 
+  // Depending on the day chosen, choose the week
+  let week: string = '';
   if (day === new Date().getDay()) {
     week = 't';
   } else {
