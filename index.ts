@@ -1,14 +1,5 @@
-import { launch, Page } from 'puppeteer';
-import setCredentials from './src/prompts/setCredentials';
-import setDay from './src/prompts/setDay';
-import setWeek from './src/prompts/setWeek';
-import loginUser from './src/pageInteraction/loginUser';
-import gotoRoomSelection from './src/pageInteraction/gotoRoomSelection';
-import selectRooms from './src/pageInteraction/selectRooms';
-import selectWeek from './src/pageInteraction/selectWeek';
-import selectDay from './src/pageInteraction/selectDay';
-import selectView from './src/pageInteraction/selectView';
-import viewTimetable from './src/pageInteraction/viewTimetable';
+import getParameters from './src/prompts';
+import getTimetables from './src/pageInteraction';
 /**
  * An array which contains strings.
  *
@@ -59,48 +50,15 @@ const excludedRooms = [
 const url: string = 'https://timetable.hw.ac.uk/WebTimetables/LiveED/Login.aspx';
 
 async function run(url: string) {
-  // Ask the questions at the start
-  const credentials = await setCredentials();
-  const day: number = await setDay();
-
-  // Depending on the day chosen, choose the week
-  let week: string = '';
-  if (day === new Date().getDay()) {
-    week = 't';
-  } else {
-    week = await setWeek();
-  }
-
-  // Open a new browser
-  const browser = await launch({
-    headless: false,
-  });
-
-  // Create a new page
-  const page: Page = await browser.newPage();
-
-  // Set the width and height of the viewport of the page to avoid
-  // rescaling issues as I don't trust the developers
-  await page.setViewport({ width: 1440, height: 1080 });
-
-  // Go to the page to book the room and DO NOT continue until there
-  // are at least 2 idle network connections. This makes sure everything
-  // is loaded before continuing
-  await page.goto(url, { waitUntil: 'networkidle2' });
-
-  await loginUser(page, credentials.username, credentials.password);
-  await gotoRoomSelection(page);
-
-  await selectRooms(page, excludedRooms);
-  await selectWeek(page, week);
-
-  // View the timetable on a specific day of the week
-  await selectDay(page, day);
-
-  // View the timetable as a list, instead of the default grid view
-  await selectView(page, 'list');
-
-  await viewTimetable(page);
+  const params = await getParameters();
+  await getTimetables(
+    url,
+    params.username,
+    params.password,
+    params.week,
+    params.day,
+    excludedRooms,
+  );
 }
 
 run(url);

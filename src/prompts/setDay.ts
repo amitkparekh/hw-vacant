@@ -6,7 +6,6 @@ async function setDay() {
       type: 'select',
       name: 'day',
       message: 'What day?',
-      initial: 0,
       choices: [
         { title: 'Today', value: new Date().getDay() },
         { title: 'Monday', value: 1 },
