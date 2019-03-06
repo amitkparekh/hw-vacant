@@ -40,9 +40,7 @@ const setRooms = async (preferred_rooms: string[]) => {
       ]);
   }
 
-  const regExpFilters = await convertArrayToRegExp(filters);
-
-  return regExpFilters;
+  return await convertArrayToRegExp(filters);
 };
 
 export default setRooms;
