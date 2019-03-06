@@ -1,5 +1,5 @@
 import getParameters from './src/prompts';
-import getTimetables from './src/pageInteraction';
+import getTimetables from './src/pageInteractions';
 /**
  * An array which contains strings.
  *
@@ -15,7 +15,7 @@ async function run(url: string) {
     params.password,
     params.week,
     params.day,
-    params.excludedRooms,
+    params.roomsFilter,
   );
 }
 

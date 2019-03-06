@@ -9,13 +9,13 @@ import selectView from './selectView';
 import viewTimetable from './viewTimetable';
 import reduceTimetable from './reduceTimetable';
 
-async function getDetails(
+async function pageInteractions(
   url: string,
   username: string,
   password: string,
   week: string,
   day: number,
-  excludedRooms: string[],
+  roomsFilter: RegExp,
 ) {
   // Open a new browser
   const browser = await launch({
@@ -26,8 +26,8 @@ async function getDetails(
   const page: Page = await browser.newPage();
 
   // Set the width and height of the viewport of the page to avoid
-  // rescaling issues as I don't trust the developers
-  await page.setViewport({ width: 1440, height: 1080 });
+  // rescaling issues
+  await page.setViewport({ width: 800, height: 1080 });
 
   // Go to the page to book the room and DO NOT continue until there
   // are at least 2 idle network connections. This makes sure everything
@@ -37,7 +37,7 @@ async function getDetails(
   await loginUser(page, username, password);
   await gotoRoomSelection(page);
 
-  await selectRooms(page, excludedRooms);
+  await selectRooms(page, roomsFilter);
   await selectWeek(page, week);
 
   // View the timetable on a specific day of the week
@@ -51,4 +51,4 @@ async function getDetails(
   await reduceTimetable(page);
 }
 
-export default getDetails;
+export default pageInteractions;

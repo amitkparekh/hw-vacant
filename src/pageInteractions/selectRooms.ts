@@ -18,7 +18,9 @@ async function countOptions(page: Page, selector: string) {
 async function getOption(page: Page, selector: string, childNumber: number) {
   let optionDetails: string[] = await page.evaluate(
     (element: string, childNumber: number) => {
-      const option = document.querySelector(element).children[childNumber] as HTMLOptionElement;
+      const option = document.querySelector(element).children[
+        childNumber
+      ] as HTMLOptionElement;
       let text: string = option.innerHTML;
       let value: string = option.value;
       return [text, value];
@@ -29,11 +31,14 @@ async function getOption(page: Page, selector: string, childNumber: number) {
   return optionDetails;
 }
 
-async function filterOptions(page: Page, dropdownSelector: string, filters: string[]) {
-  const initialOptionsCount: number = await countOptions(page, dropdownSelector);
-  let viableOptions = [];
+async function filterOptions(page: Page, dropdownSelector: string, filters: RegExp) {
+  // Get the total number of rooms available
+  const totalOptionsCount: number = await countOptions(page, dropdownSelector);
 
-  for (let counter = 0; counter < initialOptionsCount; counter++) {
+  // Init an empty array for the results
+  let viableOptions: string[] = [];
+
+  for (let counter = 0; counter < totalOptionsCount; counter++) {
     const optionDetails: string[] = await getOption(page, dropdownSelector, counter);
 
     const optionValue: string = optionDetails[1];
@@ -42,11 +47,7 @@ async function filterOptions(page: Page, dropdownSelector: string, filters: stri
 
     const optionTextLower = optionText.toLowerCase();
 
-    if (
-      !filters.some(function(element) {
-        return optionTextLower.indexOf(element) >= 0;
-      })
-    ) {
+    if (filters.test(optionTextLower)) {
       viableOptions.push(optionValue);
     }
   }
@@ -54,9 +55,13 @@ async function filterOptions(page: Page, dropdownSelector: string, filters: stri
   return viableOptions;
 }
 
-async function selectRooms(page: Page, excludedRooms: string[]) {
+async function selectRooms(page: Page, roomsFilter: RegExp) {
   const roomDropdownSelector: string = 'select#dlObject';
-  const viableRooms: string[] = await filterOptions(page, roomDropdownSelector, excludedRooms);
+  const viableRooms: string[] = await filterOptions(
+    page,
+    roomDropdownSelector,
+    roomsFilter,
+  );
   await page.select(roomDropdownSelector, ...viableRooms);
 }
 

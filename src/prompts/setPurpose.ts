@@ -1,98 +1,48 @@
 import { prompt } from 'prompts';
 
-async function setPurpose() {
-  const global_exclusion = [
-    'estates',
-    'hp studio',
-    'stirling university',
-    'chem',
-    'library',
-    'jng61-node1',
-    'jng61-node2',
-    'quiet study',
-    'moyen',
-    'locked',
-    'study area',
-    'elsewhere',
-    'sports academy',
-    'robotarium',
-    'pg top floor',
-    'gh heriot meeting room',
-    'hncrush',
-    'wacrush',
-    'jncrush',
-    'jwcrush',
-    'crush',
-    'workshop',
-    '3d printing',
-    'testing',
-    'prototyping',
-    'rotating house',
-    'engine cell',
-    'engineering',
-    'wet',
-    'services',
-    'acoustics',
-    'group study',
-    'bloomberg',
-    'trading',
-    'metrology',
-    'high',
-    'esso',
-    'geo',
-    'airflow',
-    'languages interpreting',
-    'lb1',
-    'language',
-    'mmedia',
-    'formula',
-    'dynamics',
-    'wind tunnel',
-    'eng',
-    'proj.',
-    'chevron',
-    'hydraulics',
-    'biological sciences',
-    'physics',
-    'design studio',
-    'light structures',
-    'ee machines',
-    'events',
-    'linux',
-    'resource centre',
-    'foyer',
-    'hn2',
-    'hpg08',
-    'lbg01',
-    'tp',
-    'office',
-    'ebs room',
-  ];
+const convertArrayToRegExp = async (arr: string[]) => {
+  return new RegExp(arr.join('|'), 'gi');
+};
 
-  const excluded_computers = ['lab', 'computer', 'laboratory'];
-
+const setRooms = async (preferred_rooms: string[]) => {
   const questions = [
     {
       type: 'select',
       name: 'purpose',
       message: 'What for?',
       initial: 0,
-      choices: [{ title: 'Classroom', value: 0 }, { title: 'Computer room', value: 1 }],
+      choices: [
+        { title: 'Dresser work', value: 'dresser' },
+        { title: 'Classroom', value: 'classroom' },
+        { title: 'Computer lab', value: 'computers' },
+      ],
     },
   ];
 
   const response = await prompt(questions);
 
-  let excluded_rooms = [];
+  let filters: string[] = ['^locked'];
 
   switch (response.purpose) {
-    case 0:
-    default:
-      excluded_rooms = global_exclusion.concat(excluded_computers);
+    case 'dresser':
+      filters = filters.concat(preferred_rooms);
       break;
+    case 'computers':
+      filters = filters.concat(['Computer Lab']);
+      break;
+    case 'classroom':
+    default:
+      filters = filters.concat([
+        'Tables & Chairs',
+        'Fixed Seating',
+        'ffixed seating',
+        'in rows',
+      ]);
   }
 
-  return excluded_rooms;
-}
+  const regExpFilters = await convertArrayToRegExp(filters);
 
-export default setPurpose;
+  return regExpFilters;
+};
+
+export default setRooms;
