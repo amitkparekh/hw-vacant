@@ -1,33 +1,40 @@
 import { Page } from 'puppeteer';
 
-async function countOptions(page: Page, dropdownSelector: string) {
+/**
+ * Count the options in a <select> element
+ *
+ * @param page
+ * @param selector Identifier for the <select> element
+ * @returns Number of options in a dropdown list
+ */
+async function countOptions(page: Page, selector: string) {
   const optionCount: number = await page.evaluate((element: string) => {
     return document.querySelector(element).childElementCount;
-  }, dropdownSelector);
+  }, selector);
 
   return optionCount;
 }
 
-async function getOption(page: Page, dropdownSelector: string, childNumber: number) {
-  let optionDetails = await page.evaluate(
+async function getOption(page: Page, selector: string, childNumber: number) {
+  let optionDetails: string[] = await page.evaluate(
     (element: string, childNumber: number) => {
       const option = document.querySelector(element).children[childNumber] as HTMLOptionElement;
-      let text = option.innerHTML;
-      let value = option.value;
+      let text: string = option.innerHTML;
+      let value: string = option.value;
       return [text, value];
     },
-    dropdownSelector,
+    selector,
     childNumber,
   );
   return optionDetails;
 }
 
-async function filterOptions(page: Page, dropdownSelector: string, filters: Array<string>) {
+async function filterOptions(page: Page, dropdownSelector: string, filters: string[]) {
   const initialOptionsCount: number = await countOptions(page, dropdownSelector);
   let viableOptions = [];
 
   for (let counter = 0; counter < initialOptionsCount; counter++) {
-    const optionDetails: Array<string> = await getOption(page, dropdownSelector, counter);
+    const optionDetails: string[] = await getOption(page, dropdownSelector, counter);
 
     const optionValue: string = optionDetails[1];
 
@@ -47,9 +54,9 @@ async function filterOptions(page: Page, dropdownSelector: string, filters: Arra
   return viableOptions;
 }
 
-async function selectRooms(page: Page, excludedRooms: Array<string>) {
+async function selectRooms(page: Page, excludedRooms: string[]) {
   const roomDropdownSelector: string = 'select#dlObject';
-  const viableRooms: Array<string> = await filterOptions(page, roomDropdownSelector, excludedRooms);
+  const viableRooms: string[] = await filterOptions(page, roomDropdownSelector, excludedRooms);
   await page.select(roomDropdownSelector, ...viableRooms);
 }
 

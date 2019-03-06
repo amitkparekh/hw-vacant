@@ -3,6 +3,8 @@ require('dotenv').config();
 
 /**
  * Get the username and password and return them
+ *
+ * @returns Username and password
  */
 async function setCredentials() {
   const questions = [
