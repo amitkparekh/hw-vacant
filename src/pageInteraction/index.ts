@@ -7,6 +7,7 @@ import selectWeek from './selectWeek';
 import selectDay from './selectDay';
 import selectView from './selectView';
 import viewTimetable from './viewTimetable';
+import reduceTimetable from './reduceTimetable';
 
 async function getDetails(
   url: string,
@@ -46,6 +47,8 @@ async function getDetails(
   await selectView(page, 'list');
 
   await viewTimetable(page);
+
+  await reduceTimetable(page);
 }
 
 export default getDetails;
