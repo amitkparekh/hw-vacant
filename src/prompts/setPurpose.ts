@@ -1,7 +1,7 @@
 import { prompt } from 'prompts';
 
 const convertArrayToRegExp = async (arr: string[]) => {
-  return new RegExp(arr.join('|'), 'gi');
+  return new RegExp(arr.join('|'), 'im');
 };
 
 const setRooms = async (preferred_rooms: string[]) => {
@@ -21,7 +21,12 @@ const setRooms = async (preferred_rooms: string[]) => {
 
   const response = await prompt(questions);
 
-  let filters: string[] = ['^locked'];
+  let filters: string[] = [
+    '^locked',
+    '^hn registry services resource',
+    '^lb1',
+    '^lb108',
+  ];
 
   switch (response.purpose) {
     case 'dresser':
@@ -33,8 +38,8 @@ const setRooms = async (preferred_rooms: string[]) => {
     case 'classroom':
     default:
       filters = filters.concat([
-        'Tables & Chairs',
-        'Fixed Seating',
+        'tables &amp; chairs',
+        'fixed seating',
         'ffixed seating',
         'in rows',
       ]);
