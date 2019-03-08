@@ -41,14 +41,12 @@ async function filterOptions(page: Page, dropdownSelector: string, filters: RegE
   for (let counter = 0; counter < totalOptionsCount; counter++) {
     const optionDetails: string[] = await getOption(page, dropdownSelector, counter);
 
+    const optionText: string = optionDetails[0];
     const optionValue: string = optionDetails[1];
 
-    const optionText: string = optionDetails[0];
-
-    const optionTextLower = optionText.toLowerCase();
-
-    if (filters.test(optionTextLower)) {
+    if (await filters.test(optionText)) {
       viableOptions.push(optionValue);
+    } else {
     }
   }
 
